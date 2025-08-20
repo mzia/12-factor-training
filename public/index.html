@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12-Factor App Training Platform</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        h1 { 
+            color: #00ff88; 
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .status { 
+            background: rgba(0,0,0,0.5); 
+            padding: 20px; 
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #333;
+        }
+        .factor {
+            background: rgba(0,255,136,0.1);
+            border: 1px solid #00ff88;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        .factor:hover {
+            background: rgba(0,255,136,0.2);
+            transform: translateX(5px);
+        }
+        .factor strong {
+            color: #00ff88;
+            font-size: 1.1em;
+        }
+        .loading {
+            color: #888;
+            font-style: italic;
+        }
+        .healthy { color: #00ff88; }
+        .unhealthy { color: #ff4444; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 12-Factor Application Training Platform</h1>
+        
+        <div class="status">
+            <h2>System Status</h2>
+            <div id="status-content" class="loading">Loading...</div>
+        </div>
+        
+        <div id="factors">
+            <h2>The 12 Factors</h2>
+            <div id="factors-content" class="loading">Loading factors...</div>
+        </div>
+    </div>
+    
+    <script>
+        // Check health endpoint
+        fetch('/health')
+            .then(res => res.json())
+            .then(data => {
+                const statusClass = data.status === 'healthy' ? 'healthy' : 'unhealthy';
+                document.getElementById('status-content').innerHTML = `
+                    <p>Status: <span class="${statusClass}">${data.status}</span></p>
+                    <p>Uptime: ${Math.floor(data.uptime)}s</p>
+                    <p>Database: <span class="${data.checks?.database?.status === 'healthy' ? 'healthy' : 'unhealthy'}">${data.checks?.database?.status || 'unknown'}</span></p>
+                    <p>Redis: <span class="${data.checks?.redis?.status === 'healthy' ? 'healthy' : 'unhealthy'}">${data.checks?.redis?.status || 'unknown'}</span></p>
+                `;
+            })
+            .catch(err => {
+                document.getElementById('status-content').innerHTML = '<span class="unhealthy">Error loading status</span>';
+            });
+            
+        // Load factors
+        fetch('/api/factors')
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('factors-content');
+                container.innerHTML = '';
+                data.factors.forEach(factor => {
+                    const factorDiv = document.createElement('div');
+                    factorDiv.className = 'factor';
+                    factorDiv.innerHTML = `
+                        <strong>${factor.id}. ${factor.name}</strong><br>
+                        ${factor.description}
+                    `;
+                    container.appendChild(factorDiv);
+                });
+            })
+            .catch(err => {
+                document.getElementById('factors-content').innerHTML = '<span class="unhealthy">Error loading factors</span>';
+            });
+    </script>
+</body>
+</html>

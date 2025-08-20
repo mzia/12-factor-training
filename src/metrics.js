@@ -1,12 +1,8 @@
 const promClient = require('prom-client');
 
-// Create a Registry
 const register = new promClient.Registry();
-
-// Add default metrics
 promClient.collectDefaultMetrics({ register });
 
-// Custom metrics
 const httpRequestDuration = new promClient.Histogram({
   name: 'http_request_duration_ms',
   help: 'Duration of HTTP requests in milliseconds',
@@ -20,17 +16,9 @@ const httpRequestTotal = new promClient.Counter({
   labelNames: ['method', 'route', 'status_code']
 });
 
-const activeConnections = new promClient.Gauge({
-  name: 'active_connections',
-  help: 'Number of active connections'
-});
-
-// Register custom metrics
 register.registerMetric(httpRequestDuration);
 register.registerMetric(httpRequestTotal);
-register.registerMetric(activeConnections);
 
-// Middleware to track metrics
 function metricsMiddleware(req, res, next) {
   const start = Date.now();
   
@@ -62,8 +50,4 @@ function setupMetrics(app) {
   });
 }
 
-module.exports = {
-  setupMetrics,
-  metricsMiddleware,
-  register
-};
+module.exports = { setupMetrics, metricsMiddleware, register };

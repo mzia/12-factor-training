@@ -48,8 +48,8 @@ app.get('/api/factors', (req, res) => {
       { id: 6, name: 'Processes', description: 'Execute app as stateless processes' },
       { id: 7, name: 'Port Binding', description: 'Export services via port binding' },
       { id: 8, name: 'Concurrency', description: 'Scale out via the process model' },
-      { id: 9, name: 'Disposability', description: 'Maximize robustness with fast startup and graceful shutdown' },
-      { id: 10, name: 'Dev/Prod Parity', description: 'Keep development and production similar' },
+      { id: 9, name: 'Disposability', description: 'Fast startup and graceful shutdown' },
+      { id: 10, name: 'Dev/Prod Parity', description: 'Keep environments similar' },
       { id: 11, name: 'Logs', description: 'Treat logs as event streams' },
       { id: 12, name: 'Admin Processes', description: 'Run admin tasks as one-off processes' }
     ]
